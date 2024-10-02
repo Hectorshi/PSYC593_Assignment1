@@ -223,7 +223,7 @@ dbl (5): births, deaths, py.men, py.women, l_x
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sweden_data <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"../data/raw/Sweden.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>SwedenData <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"../data/raw/Sweden.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 30 Columns: 8
 ── Column specification ────────────────────────────────────────────────────────
@@ -252,9 +252,9 @@ dbl (5): births, deaths, py.men, py.women, l_x
 <p>Two ways of creating new variable: 1) creating individually</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create new variable py = total person years for each data set</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>world_data<span class="sc">$</span>py <span class="ot">&lt;-</span> world_data<span class="sc">$</span>py.men <span class="sc">+</span> world_data<span class="sc">$</span>py.women</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>kenya_data<span class="sc">$</span>py <span class="ot">&lt;-</span> kenya_data<span class="sc">$</span>py.men <span class="sc">+</span> kenya_data<span class="sc">$</span>py.women</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>sweden_data<span class="sc">$</span>py <span class="ot">&lt;-</span> sweden_data<span class="sc">$</span>py.men <span class="sc">+</span> sweden_data<span class="sc">$</span>py.women</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>world_data<span class="sc">$</span>py<span class="ot">&lt;-</span>world_data<span class="sc">$</span>py.men<span class="sc">+</span>world_data<span class="sc">$</span>py.women</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>kenya_data<span class="sc">$</span>py<span class="ot">&lt;-</span>kenya_data<span class="sc">$</span>py.men<span class="sc">+</span>kenya_data<span class="sc">$</span>py.women</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>SwedenData<span class="sc">$</span>py<span class="ot">&lt;-</span>SwedenData<span class="sc">$</span>py.men<span class="sc">+</span>SwedenData<span class="sc">$</span>py.women</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <!-- Whenever you find that you will repeat the same calculation -->
 <!-- on different sets of data, **consider** creating a function -->
@@ -264,8 +264,8 @@ dbl (5): births, deaths, py.men, py.women, l_x
 </ol>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to compute the Crude Birth Rate (CBR)</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>compute_cbr <span class="ot">&lt;-</span> <span class="cf">function</span> (population_data) {</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  population_data<span class="sc">%&gt;%</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>compute_cbr <span class="ot">&lt;-</span> <span class="cf">function</span> (populationData) {</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  populationData<span class="sc">%&gt;%</span> </span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(period) <span class="sc">%&gt;%</span> </span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarise</span>(<span class="at">cbr =</span> <span class="fu">sum</span>(births) <span class="sc">/</span> <span class="fu">sum</span>(py)) <span class="sc">%&gt;%</span> </span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pull</span>()</span>
@@ -279,15 +279,15 @@ dbl (5): births, deaths, py.men, py.women, l_x
 <p>Then, put in each data set.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the CBR for each data set</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>(worldcbr  <span class="ot">&lt;-</span> <span class="fu">compute_cbr</span>(world_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>(worldcbr  <span class="ot">&lt;-</span><span class="fu">compute_cbr</span>(world_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.03732863 0.02021593</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(kenyacbr  <span class="ot">&lt;-</span> <span class="fu">compute_cbr</span>(kenya_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(kenyacbr  <span class="ot">&lt;-</span><span class="fu">compute_cbr</span>(kenya_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.05209490 0.03851507</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(swedencbr <span class="ot">&lt;-</span> <span class="fu">compute_cbr</span>(sweden_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(swedencbr <span class="ot">&lt;-</span><span class="fu">compute_cbr</span>(SwedenData))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.01539614 0.01192554</code></pre>
 </div>
@@ -308,7 +308,7 @@ dbl (5): births, deaths, py.men, py.women, l_x
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to compute Age specific fertility rate (ASFR)</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>compute_asfr <span class="ot">&lt;-</span> <span class="cf">function</span> (pop_data) {</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  pop_data <span class="sc">%&gt;%</span> </span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">asfr =</span> births <span class="sc">/</span> py.women)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">asfr=</span>births <span class="sc">/</span> py.women)</span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Apply it seperately</p>
@@ -316,7 +316,7 @@ dbl (5): births, deaths, py.men, py.women, l_x
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute ASFR for each data set</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>world_data  <span class="ot">&lt;-</span> <span class="fu">compute_asfr</span>(world_data)</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>kenya_data  <span class="ot">&lt;-</span> <span class="fu">compute_asfr</span>(kenya_data)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>sweden_data <span class="ot">&lt;-</span> <span class="fu">compute_asfr</span>(sweden_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>SwedenData <span class="ot">&lt;-</span> <span class="fu">compute_asfr</span>(SwedenData)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare ASFRs for Kenya and Sweden</span></span>
@@ -328,7 +328,7 @@ dbl (5): births, deaths, py.men, py.women, l_x
 [19] 0.10057087 0.23583536 0.23294721 0.18087964 0.13126805 0.05626214
 [25] 0.03815044 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>sweden_data<span class="sc">$</span>asfr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>SwedenData<span class="sc">$</span>asfr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] 0.0000000000 0.0000000000 0.0000000000 0.0389089519 0.1277108826
  [6] 0.1252436647 0.0873641591 0.0486037714 0.0162101857 0.0013418290
@@ -358,7 +358,7 @@ dbl (5): births, deaths, py.men, py.women, l_x
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>compute_tfr <span class="ot">&lt;-</span> <span class="cf">function</span> (population_data) {</span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  population_data <span class="sc">%&gt;%</span> </span>
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(period) <span class="sc">%&gt;%</span> </span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarise</span>(<span class="at">tfr =</span> <span class="dv">5</span> <span class="sc">*</span> <span class="fu">sum</span>(asfr)) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarise</span>(<span class="at">tfr=</span><span class="dv">5</span> <span class="sc">*</span><span class="fu">sum</span>(asfr)) <span class="sc">%&gt;%</span> </span>
 <span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pull</span>()</span>
 <span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -373,7 +373,7 @@ dbl (5): births, deaths, py.men, py.women, l_x
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 7.591410 4.879568</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>(sweden_tfr <span class="ot">&lt;-</span> <span class="fu">compute_tfr</span>(sweden_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>(sweden_tfr <span class="ot">&lt;-</span> <span class="fu">compute_tfr</span>(SwedenData))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 2.226917 1.902764</code></pre>
 </div>
@@ -384,7 +384,7 @@ dbl (5): births, deaths, py.men, py.women, l_x
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>world_data <span class="sc">%&gt;%</span> </span>
 <span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">group_by</span>(period) <span class="sc">%&gt;%</span> </span>
 <span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summarise</span>(<span class="at">total_women=</span><span class="fu">sum</span>(py.women),</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="at">total_births =</span> <span class="fu">sum</span>(births)) <span class="ot">-&gt;</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="at">total_births=</span><span class="fu">sum</span>(births)) <span class="ot">-&gt;</span></span>
 <span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>totals_world</span>
 <span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -431,7 +431,7 @@ dbl (5): births, deaths, py.men, py.women, l_x
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.02396254 0.01038914</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>(sweden_cdr <span class="ot">&lt;-</span> <span class="fu">compute_cdr</span>(sweden_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>(sweden_cdr <span class="ot">&lt;-</span> <span class="fu">compute_cdr</span>(SwedenData))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.009844842 0.009968455</code></pre>
 </div>
@@ -450,7 +450,7 @@ dbl (5): births, deaths, py.men, py.women, l_x
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to compute Age specific death rate (ASDR)</span></span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>compute_asdr <span class="ot">&lt;-</span> <span class="cf">function</span> (pop_data) {</span>
 <span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>pop_data <span class="sc">%&gt;%</span> </span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(<span class="at">asdr =</span> deaths <span class="sc">/</span> py)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(<span class="at">asdr=</span>deaths<span class="sc">/</span>py)</span>
 <span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Aplly it separately</p>
@@ -458,7 +458,7 @@ dbl (5): births, deaths, py.men, py.women, l_x
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute ASDR for each data set</span></span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>world_data  <span class="ot">&lt;-</span> <span class="fu">compute_asdr</span>(world_data)</span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>kenya_data  <span class="ot">&lt;-</span> <span class="fu">compute_asdr</span>(kenya_data)</span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>sweden_data <span class="ot">&lt;-</span> <span class="fu">compute_asdr</span>(sweden_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>SwedenData <span class="ot">&lt;-</span> <span class="fu">compute_asdr</span>(SwedenData)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Even the CDR is very close for Kenya and Sweden, Sweden has a significantly lower ASDR than Kenya in 2005 - 2010.</p>
 </section>
@@ -475,21 +475,21 @@ dbl (5): births, deaths, py.men, py.women, l_x
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>compute_pop_prop <span class="ot">&lt;-</span> <span class="cf">function</span> (pop_data) {</span>
 <span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>pop_data <span class="sc">%&gt;%</span> </span>
 <span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(period) <span class="sc">%&gt;%</span></span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">pop_por =</span> py <span class="sc">/</span> <span class="fu">sum</span>(py)) <span class="sc">%&gt;%</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">popP =</span> py <span class="sc">/</span> <span class="fu">sum</span>(py)) <span class="sc">%&gt;%</span></span>
 <span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ungroup</span>()</span>
 <span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Aplly it separately</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute population proportion for each data set</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>world_data <span class="ot">&lt;-</span> <span class="fu">compute_pop_prop</span>(world_data)</span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>kenya_data <span class="ot">&lt;-</span> <span class="fu">compute_pop_prop</span>(kenya_data)</span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>sweden_data <span class="ot">&lt;-</span> <span class="fu">compute_pop_prop</span>(sweden_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>world_data<span class="ot">&lt;-</span> <span class="fu">compute_pop_prop</span>(world_data)</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>kenya_data<span class="ot">&lt;-</span> <span class="fu">compute_pop_prop</span>(kenya_data)</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>SwedenData<span class="ot">&lt;-</span> <span class="fu">compute_pop_prop</span>(SwedenData)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute Kenyas CDR Kenya had Sweden's population distribution</span></span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mutate</span>(kenya_data,</span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a> <span class="at">temp_cdr  =</span> asdr <span class="sc">*</span> sweden_data<span class="sc">$</span>pop_por) <span class="sc">%&gt;%</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a> <span class="at">temp_cdr  =</span> asdr <span class="sc">*</span> SwedenData<span class="sc">$</span>popP) <span class="sc">%&gt;%</span></span>
 <span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a> <span class="fu">group_by</span>(period) <span class="sc">%&gt;%</span></span>
 <span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a> <span class="fu">summarise</span>(<span class="at">cdrresweden =</span> <span class="fu">sum</span>(temp_cdr))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">

@@ -4,7 +4,7 @@ subtitle: "Assignment 1 - PSYC593"
 format:
   html: default
 date: today
-author: "Name"
+author: "Hector Shi"
 ---
 
 <!-- These problems come from Imai, K. & Webb Williams, N. (2018). Quantitative Social Science: An introduction -->
@@ -54,17 +54,18 @@ Source: United Nations, Department of Economic and Social Affairs,
 Population Division (2013). *World Population Prospects: The 2012 Revision, DVD Edition.*
 
 Load tidyverse and dataset; hide the result from the output
-```{r, results='hide'}
+```{r, message = FALSE}
 # Load packages ----
 library(tidyverse)
+# Hide messages from loading package
 ```
 
-```{r, results='hide'}
+```{r}
 # Read data, modified to fit the new directory ----
 world_data  <- readr::read_csv("../data/raw/World.csv")
 kenya_data  <- readr::read_csv("../data/raw/Kenya.csv")
-SwedenData <- readr::read_csv("../data/raw/Sweden.csv")
-# For some reason, cannot hide the results
+sweden_data <- readr::read_csv("../data/raw/Sweden.csv")
+# Change swedenData to sweden_data for tidy version
 ```
 
 <!-- The `read_csv` function from the package `readr` -->
@@ -111,9 +112,9 @@ Two ways of creating new variable:
 1) creating individually
 ```{r}
 # Create new variable py = total person years for each data set
-world_data$py<-world_data$py.men+world_data$py.women
-kenya_data$py<-kenya_data$py.men+kenya_data$py.women
-SwedenData$py<-SwedenData$py.men+SwedenData$py.women
+world_data$py <- world_data$py.men + world_data$py.women
+kenya_data$py <- kenya_data$py.men + kenya_data$py.women
+sweden_data$py <- sweden_data$py.men + sweden_data$py.women
 ```
 
 
@@ -122,9 +123,9 @@ SwedenData$py<-SwedenData$py.men+SwedenData$py.women
 <!-- instead of repeating the code for each piece of data. -->
 2) Create a general function
 ```{r}
-# Function to compute the Crude Birth Rate (CBR)
-compute_cbr <- function (populationData) {
-  populationData%>% 
+# Function to compute the Crude Birth Rate (CBR), changed populationData to population_data
+compute_cbr <- function (population_data) {
+  population_data%>% 
     group_by(period) %>% 
       summarise(cbr = sum(births) / sum(py)) %>% 
         pull()
@@ -141,9 +142,9 @@ compute_cbr <- function (populationData) {
 Then, put in each data set.
 ```{r}
 # Compute the CBR for each data set
-(worldcbr  <-compute_cbr(world_data))
-(kenyacbr  <-compute_cbr(kenya_data))
-(swedencbr <-compute_cbr(SwedenData))
+(worldcbr  <- compute_cbr(world_data))
+(kenyacbr  <- compute_cbr(kenya_data))
+(swedencbr <- compute_cbr(sweden_data))
 ```
 
 The total person-years data for the 3 different datasets are stored in kenyacbr,
@@ -182,7 +183,7 @@ Create the general function
 # Function to compute Age specific fertility rate (ASFR)
 compute_asfr <- function (pop_data) {
   pop_data %>% 
-    mutate(asfr=births / py.women)
+    mutate(asfr = births / py.women)
 }
 ```
 
@@ -191,13 +192,13 @@ Apply it seperately
 # Compute ASFR for each data set
 world_data  <- compute_asfr(world_data)
 kenya_data  <- compute_asfr(kenya_data)
-SwedenData <- compute_asfr(SwedenData)
+sweden_data <- compute_asfr(sweden_data)
 ```
 
 ```{r}
 # Compare ASFRs for Kenya and Sweden
 kenya_data$asfr
-SwedenData$asfr
+sweden_data$asfr
 
 ```
 
@@ -240,7 +241,7 @@ Create the general function
 compute_tfr <- function (population_data) {
   population_data %>% 
     group_by(period) %>% 
-      summarise(tfr=5 *sum(asfr)) %>% 
+      summarise(tfr = 5 * sum(asfr)) %>% 
         pull()
 }
 ```
@@ -250,7 +251,7 @@ Apply it separately
 # Compute the TFR for each data set
 (world_tfr  <- compute_tfr(world_data))
 (kenya_tfr  <- compute_tfr(kenya_data))
-(sweden_tfr <- compute_tfr(SwedenData))
+(sweden_tfr <- compute_tfr(sweden_data))
 ```
 
 ```{r}
@@ -259,7 +260,7 @@ Apply it separately
 world_data %>% 
 group_by(period) %>% 
 summarise(total_women=sum(py.women),
-total_births=sum(births)) ->
+total_births = sum(births)) ->
 totals_world
 )
 
@@ -299,7 +300,7 @@ Apply it separately
 # Compute the CDR for each data set
 (world_cdr  <- compute_cdr(world_data))
 (kenya_cdr  <- compute_cdr(kenya_data))
-(sweden_cdr <- compute_cdr(SwedenData))
+(sweden_cdr <- compute_cdr(sweden_data))
 ```
 
 The crude death rate for world and Kenya decreased where increased for Sweden.
@@ -329,7 +330,7 @@ Create general function
 # Function to compute Age specific death rate (ASDR)
 compute_asdr <- function (pop_data) {
 pop_data %>% 
-mutate(asdr=deaths/py)
+mutate(asdr = deaths / py)
 }
 ```
 
@@ -338,7 +339,7 @@ Aplly it separately
 # Compute ASDR for each data set
 world_data  <- compute_asdr(world_data)
 kenya_data  <- compute_asdr(kenya_data)
-SwedenData <- compute_asdr(SwedenData)
+sweden_data <- compute_asdr(sweden_data)
 ```
 
 Even the CDR is very close for Kenya and Sweden, Sweden has a significantly 
@@ -376,7 +377,7 @@ Create general function.
 compute_pop_prop <- function (pop_data) {
 pop_data %>% 
     group_by(period) %>%
-    mutate(popP = py / sum(py)) %>%
+    mutate(pop_por = py / sum(py)) %>%
     ungroup()
 }
 ```
@@ -384,15 +385,15 @@ pop_data %>%
 Aplly it separately
 ```{r}
 # Compute population proportion for each data set
-world_data<- compute_pop_prop(world_data)
-kenya_data<- compute_pop_prop(kenya_data)
-SwedenData<- compute_pop_prop(SwedenData)
+world_data <- compute_pop_prop(world_data)
+kenya_data <- compute_pop_prop(kenya_data)
+sweden_data <- compute_pop_prop(sweden_data)
 ```
 
 ```{r}
 # Compute Kenyas CDR Kenya had Sweden's population distribution
 mutate(kenya_data,
- temp_cdr  = asdr * SwedenData$popP) %>%
+ temp_cdr  = asdr * sweden_data$pop_por) %>%
  group_by(period) %>%
  summarise(cdrresweden = sum(temp_cdr))
 ```
